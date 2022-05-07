@@ -1,0 +1,25 @@
+name: Build LaTeX CV document
+on: [push]
+jobs:
+  build-latex-cv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: main.tex
+      
+      - name: Renaming build file
+        run: mv main.pdf Danilo_Lazic_CV.pdf
+      
+      - name: Make sure PDF file exists
+        run: file Danilo_Lazic_CV.pdf | grep -q 'PDF'
+
+      - name: Make a release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: Danilo_Lazic_CV.pdf
